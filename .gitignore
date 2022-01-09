@@ -1,0 +1,2 @@
+#ignore .env file to protect bot token
+.env
