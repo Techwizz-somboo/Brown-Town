@@ -18,5 +18,5 @@ Note that Brown Town is still early in development. Things are bound to change.
 
 ### Using the bot in your server
 Currently, I don't host the bot publicly for people to use however, you can host it yourself.
-To do that, simply create a new file named .env and add `CLIENT_TOKEN='YOUR-BOT-TOKEN` as text in the file replacing YOUR-BOT-TOKEN with the token of your bot you created in the Discord developer portal.
+To do that, simply create a new file named .env and add `CLIENT_TOKEN='YOUR-BOT-TOKEN'` as text in the file replacing YOUR-BOT-TOKEN with the token of your bot you created in the Discord developer portal.
 If you don't know how to create a bot in the Discord developer portal you can look it up, there are many guides. Next, you need to edit index.js, find the line that says const channelId and then change the ID there to your channel ID. Now simply run `node index.js` and then you're done.
