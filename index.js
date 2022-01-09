@@ -10,7 +10,7 @@ const bot = new Client({
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag}!`);
-  bot.user.setActivity(`welcome to my town!`, {type: 'PLAYING'});
+  bot.user.setActivity(`reach for the sky and wave hi`, {type: 'PLAYING'});
 });
 
 bot.on('guildMemberAdd', (member) => {
