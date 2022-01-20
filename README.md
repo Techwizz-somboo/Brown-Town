@@ -9,11 +9,11 @@ Note that Brown Town is still early in development. Things are bound to change.
 
 - [x] Send a welcome message when someone joins your Discord guild
 - [x] Set a custom status for the bot
+- [x] Naughty word filter
 
 ### Planned Features
 
 - [ ] Add an option to send a DM to new guild members
-- [ ] Add naughty word filters
 - [ ] More to come
 
 ### Using the bot in your server
