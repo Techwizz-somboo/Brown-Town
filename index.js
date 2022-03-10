@@ -34,7 +34,7 @@ bot.on('messageCreate', (message) => {
         bot.channels.cache.get(modchat).send(sender);
         bot.channels.cache.get(modchat).send(message);
         }
-    else if(message.content.toLowerCase().includes('ass') || message.content.toLowerCase().includes('tit')){
+    else if(message.content.toLowerCase().includes('tit')){
         const sender = `<@&${509449386149937158}> ${message.author} sent the following message (BUT WAS NOT DELETED)...`
         const modchat = '510189494809526283';
         bot.channels.cache.get(modchat).send(sender);
