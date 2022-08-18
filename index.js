@@ -41,6 +41,9 @@ bot.on('messageCreate', (message) => {
         bot.channels.cache.get(modchat).send(sender);
         bot.channels.cache.get(modchat).send(message);
         }
+    else if(message.author.id === 331669618387058688 && message.content.toLowerCase().includes('bot say sorry') {
+        message.channel.send('I am sorry for whatever I did. It will not happen again');
+    }
 });
 
 //make sure this line is the last line
