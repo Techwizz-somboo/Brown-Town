@@ -15,7 +15,7 @@ bot.on('ready', () => {
 
 bot.on('guildMemberAdd', (member) => {
   console.log(member)
-  const channelId = '509441197064978443';
+  const channelId = '1010369894077960292';
   const welcomeMessage = `Hey <@${member.id}>, welcome to ***GTI Animation and Games*** 🎉🤗 ! Please go to <#770718241743044639> and state what class period you're in so we can give you your role!`;
   member.guild.channels.fetch(channelId).then(channel => {
       channel.send(welcomeMessage)
