@@ -37,12 +37,11 @@ bot.on('messageCreate', (message) => {
         }
     else if(message.content.toLowerCase().includes('bot say sorry')){
         message.channel.send('I am sorry for whatever I did. It will not happen again.');
-    }
+        }
     else if(message.content.toLowerCase().includes('tit') || message.content.toLowerCase().includes('cock')){
        if (message.content.toLowerCase().includes('title')){ //These are not bad words and will be bypassed
            return;
        }
-       else{
            const techwizz = `<@331669618387058688> `;
            const sender = techwizz + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
            const modchat = '510189494809526283';
