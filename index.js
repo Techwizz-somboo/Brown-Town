@@ -36,7 +36,7 @@ bot.on('messageCreate', (message) => {
         bot.channels.cache.get(modchat).send(message);
         }
     else if(message.content.toLowerCase().includes('tit') || message.content.toLowerCase().includes('cock')){
-       if (message.content.toLowerCase().includes('title'){ //These are not bad words and will be bypassed
+       if (message.content.toLowerCase().includes('title')){ //These are not bad words and will be bypassed
           return;
     	}
        else{
