@@ -38,6 +38,9 @@ bot.on('messageCreate', (message) => {
     else if(message.content.toLowerCase().includes('bot say sorry')){
         message.channel.send('I am sorry for whatever I did. It will not happen again.');
         }
+    else if(message.contect.toLowerCase().includes('green mario')){
+        message.channel.send('Red Luigi');
+    }
     else if(message.content.toLowerCase().includes('tit') || message.content.toLowerCase().includes('cock') || message.content.toLowerCase().includes('ass')){
        if (message.content.toLowerCase().includes('title') || message.content.toLowerCase().includes('class')){ //These are not bad words and will be bypassed
            return;
