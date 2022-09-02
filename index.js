@@ -41,6 +41,9 @@ bot.on('messageCreate', (message) => {
     else if(message.content.toLowerCase().includes('green mario')){
         message.channel.send('Red Luigi');
     }
+    else if(message.content.toLowerCase().includes('how neat is that')){
+        message.channel.send('that is pretty neat!');
+    }
     else if(message.content.toLowerCase().includes('tit') || message.content.toLowerCase().includes('cock') || message.content.toLowerCase().includes('ass')){
        if (message.content.toLowerCase().includes('title') || message.content.toLowerCase().includes('class')){ //These are not bad words and will be bypassed
            return;
