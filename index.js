@@ -4,9 +4,13 @@ const {
     Intents
 } = require('discord.js');
 
+const Tesseract = require('tesseract.js');
+
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
 });
+
+let usermessage;
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag}!`);
@@ -23,6 +27,13 @@ bot.on('guildMemberAdd', (member) => {
 });
 
 bot.on('messageCreate', (message) => {
+    if (message.attachments.size > 0) {
+        let image = message.attachments.first().url;
+        usermessage = Tesseract.recognize(image,'eng');
+    }
+    else {
+        usermessage = message.content.toLowerCase();
+    }
     if (message.author.bot) {
     	return;
     	}
