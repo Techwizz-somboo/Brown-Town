@@ -35,9 +35,6 @@ bot.on('messageCreate', (message) => {
     else if {
         usermessage = message.content.toLowerCase();
     }
-    else {
-        console.log(`Something is broken`);
-    }
     if (message.author.bot) {
     	return;
     	}
