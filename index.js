@@ -5,6 +5,7 @@ const {
 } = require('discord.js');
 
 const Tesseract = require('tesseract.js');
+import { createWorker } from 'tesseract.js';
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -29,12 +30,19 @@ bot.on('guildMemberAdd', (member) => {
 bot.on('messageCreate', (message) => {
     if (message.attachments.size > 0) {
         let image = message.attachments.first().url;
-        Tesseract.recognize(
-        image,
-        { logger: m => console.log(m) }).then(({ data: { text } }) => {
-        console.log(text);
-        usermessage = text;
-        })
+        const worker = createWorker({
+            logger: m => console.log(m)
+        });
+        
+        (async () => {
+          await worker.load();
+          await worker.loadLanguage('eng');
+          await worker.initialize('eng');
+          const { data: { text } } = await worker.recognize(image);
+          console.log(text);
+          usermessage = text;
+          await worker.terminate();
+        })();
     }
     else {
         usermessage = message.content.toLowerCase();
