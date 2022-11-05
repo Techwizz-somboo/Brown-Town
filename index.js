@@ -37,7 +37,7 @@ bot.on('messageCreate', (message) => {
     if (message.author.bot) {
     	return;
     	}
-    else if(message.content.toLowerCase().includes('fuck') || message.content.toLowerCase().includes('shit') || message.content.toLowerCase().includes('dumbass') || message.content.toLowerCase().includes('bitch') || message.content.toLowerCase().includes('nigg') || message.content.toLowerCase().includes('penis') || message.content.toLowerCase().includes('pussy') || message.content.toLowerCase().includes('damn') || message.content.toLowerCase().includes('puto') || message.content.toLowerCase().includes('cunt') || message.content.toLowerCase().includes('dyke') || message.content.toLowerCase().includes('fag') || message.content.toLowerCase().includes('beaner') || message.content.toLowerCase().includes('fvck') || message.content.toLowerCase().includes('milf') || message.content.toLowerCase().includes('dilf') || message.content.toLowerCase().includes('dick') || message.content.toLowerCase().includes('beaney') || message.content.toLowerCase().includes('gypsy') || message.content.toLowerCase().includes('bong') || message.content.toLowerCase().includes('chink') || message.content.toLowerCase().includes('cholo') || message.content.toLowerCase().includes('coon') || message.content.toLowerCase().includes('gyp') || message.content.toLowerCase().includes('injun') || message.content.toLowerCase().includes('jigaboo') || message.content.toLowerCase().includes('jigger') || message.content.toLowerCase().includes('negro') || message.content.toLowerCase().includes('whore') || message.content.toLowerCase().includes('slut') || message.content.toLowerCase().includes('redskin') || message.content.toLowerCase().includes('cooter') || message.content.toLowerCase().includes('vagina') || message.content.toLowerCase().includes('squaw') || message.content.toLowerCase().includes('twink') || message.content.toLowerCase().includes('shemale') || message.content.toLowerCase().includes('cripple') ||  message.content.toLowerCase().includes('midget') || message.content.toLowerCase().includes('kike')){
+    else if(usermessage.includes('fuck') || usermessage.includes('shit') || usermessage.includes('dumbass') || usermessage.includes('bitch') || usermessage.includes('nigg') || usermessage.includes('penis') || usermessage.includes('pussy') || usermessage.includes('damn') || usermessage.includes('puto') || usermessage.includes('cunt') || usermessage.includes('dyke') || usermessage.includes('fag') || usermessage.includes('beaner') || usermessage.includes('fvck') || usermessage.includes('milf') || usermessage.includes('dilf') || usermessage.includes('dick') || usermessage.includes('beaney') || usermessage.includes('gypsy') || usermessage.includes('bong') || usermessage.includes('chink') || usermessage.includes('cholo') || usermessage.includes('coon') || usermessage.includes('gyp') || usermessage.includes('injun') || usermessage.includes('jigaboo') || usermessage.includes('jigger') || usermessage.includes('negro') || usermessage.includes('whore') || usermessage.includes('slut') || usermessage.includes('redskin') || usermessage.includes('cooter') || usermessage.includes('vagina') || usermessage.includes('squaw') || usermessage.includes('twink') || usermessage.includes('shemale') || usermessage.includes('cripple') ||  usermessage.includes('midget') || usermessage.includes('kike')){
         const sender = `${message.author} sent the following message...`
         const modchat = '510189494809526283';
 	    const techwizz = ` <@331669618387058688> `;
@@ -46,20 +46,20 @@ bot.on('messageCreate', (message) => {
         bot.channels.cache.get(modchat).send(sender);
         bot.channels.cache.get(modchat).send(message);
         }
-    else if(message.content.toLowerCase().includes('bot say sorry')){
+    else if(usermessage.includes('bot say sorry')){
         message.channel.send('I am sorry for whatever I did. It will not happen again.');
         }
-    else if(message.content.toLowerCase().includes('green mario')){
+    else if(usermessage.includes('green mario')){
         message.channel.send('Red Luigi');
     }
-    else if(message.content.toLowerCase().includes('how neat is that')){
+    else if(usermessage.includes('how neat is that')){
         message.channel.send("that's pretty neat!");
     }
-    else if(message.content.toLowerCase().includes("that's pretty neat")){
+    else if(usermessage.includes("that's pretty neat")){
         message.channel.send('how neat is that?');
     }
-    else if(message.content.toLowerCase().includes('tit') || message.content.toLowerCase().includes('cock') || message.content.toLowerCase().includes('ass')){
-       if (message.content.toLowerCase().includes('title') || message.content.toLowerCase().includes('class')){ //These are not bad words and will be bypassed
+    else if(usermessage.includes('tit') || usermessage.includes('cock') || usermessage.includes('ass')){
+       if (usermessage.includes('title') || usermessage.includes('class')){ //These are not bad words and will be bypassed
            return;
        }
            const techwizz = `<@331669618387058688> `;
