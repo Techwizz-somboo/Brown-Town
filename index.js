@@ -30,9 +30,13 @@ bot.on('messageCreate', (message) => {
     if (message.attachments.size > 0) {
         let image = message.attachments.first().url;
         usermessage = Tesseract.recognize(image,'eng');
+        console.log(usermessage);
+    }
+    else if {
+        usermessage = message.content.toLowerCase();
     }
     else {
-        usermessage = message.content.toLowerCase();
+        console.log(`Something is broken`);
     }
     if (message.author.bot) {
     	return;
