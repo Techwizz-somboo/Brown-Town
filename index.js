@@ -5,7 +5,6 @@ const {
 } = require('discord.js');
 
 const Tesseract = require('tesseract.js');
-import { createWorker } from 'tesseract.js';
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -29,6 +28,7 @@ bot.on('guildMemberAdd', (member) => {
 
 bot.on('messageCreate', (message) => {
     if (message.attachments.size > 0) {
+        import { createWorker } from 'tesseract.js';
         let image = message.attachments.first().url;
         const worker = createWorker({
             logger: m => console.log(m)
