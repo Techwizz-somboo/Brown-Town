@@ -28,21 +28,15 @@ bot.on('guildMemberAdd', (member) => {
 
 bot.on('messageCreate', (message) => {
     if (message.attachments.size > 0) {
-        import { createWorker } from 'tesseract.js';
         let image = message.attachments.first().url;
-        const worker = createWorker({
-            logger: m => console.log(m)
-        });
-        
-        (async () => {
-          await worker.load();
-          await worker.loadLanguage('eng');
-          await worker.initialize('eng');
-          const { data: { text } } = await worker.recognize(image);
+        Tesseract.recognize(
+          image,
+          'eng',
+          { logger: m => console.log(m) }
+        ).then(({ data: { text } }) => {
           console.log(text);
           usermessage = text;
-          await worker.terminate();
-        })();
+        })
     }
     else {
         usermessage = message.content.toLowerCase();
