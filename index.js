@@ -29,11 +29,16 @@ bot.on('guildMemberAdd', (member) => {
 bot.on('messageCreate', (message) => {
     if (message.attachments.size > 0) {
         let image = message.attachments.first().url;
-        usermessage = Tesseract.recognize(image,'eng');
-        console.log(usermessage);
+        Tesseract.recognize(
+        image,
+        { logger: m => console.log(m) }).then(({ data: { text } }) => {
+        console.log(text);
+        usermessage = text;
+        })
     }
     else {
         usermessage = message.content.toLowerCase();
+        console.log("No image detected");
     }
     if (message.author.bot) {
     	return;
