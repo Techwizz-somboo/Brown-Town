@@ -32,7 +32,7 @@ bot.on('messageCreate', (message) => {
         usermessage = Tesseract.recognize(image,'eng');
         console.log(usermessage);
     }
-    else if {
+    else {
         usermessage = message.content.toLowerCase();
     }
     if (message.author.bot) {
