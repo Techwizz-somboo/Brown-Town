@@ -67,7 +67,7 @@ bot.on('messageCreate', (message) => {
         message.channel.send('how neat is that?');
     }
     else if(usermessage.includes('tit') || usermessage.includes('cock') || usermessage.includes('ass')){
-       if (usermessage.includes('title') || usermessage.includes('class')){ //These are not bad words and will be bypassed
+       if (usermessage.includes('title') || usermessage.includes('class') || usermessage.includes('grass') || usermessage.includes('pass') || usermessage.includes('assembly') || usermessage.includes('assemblies') || usermessage.includes('assume') || usermessage.includes('titan') || usermessage.includes('ambassador')){ //These are not bad words and will be bypassed
            return;
        }
            const techwizz = `<@331669618387058688> `;
