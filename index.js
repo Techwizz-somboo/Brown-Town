@@ -5,7 +5,9 @@ const {
 } = require('discord.js');
 
 const Tesseract = require('tesseract.js');
-const badWords = ["fuck", "shit", "dumbass", "bitch", "nigg", "penis", "pussy", "damn", "puto", "cunt", "dyke", "fag", "beaner", "fvck", "milf", "dilf", "dick", "beaney", "gypsy", "bong", "chink", "cholo", "danm", "gyp", "injun", "jigaboo", "jigger", "negro", "whore", "slut", "redskin", "cooter", "vagina", "squaw", "twink", "shemale", "cripple", "midget", "kike"];
+const badWords = ["fuck", "shit", "dumbass", "bitch", "nigg", "penis", "pussy", "damn", "puto", "cunt", "dyke", "fag", "beaner", "fvck", "milf", "dilf", "dick", "beaney", "gypsy", "bong", "chink", "cholo", "danm", "gyp", "injun", "jigaboo", "jigger", "negro", "whore", "slut", "redskin", "cooter", "vagina", "squaw", "twink", "shemale", "cripple", "midget", "kike", "hell"];
+const potentialBadWords = ["tit", "cock", "ass"]
+const whitelist = ["title", "class", "grass", "glass", "pass", "assembly", "assemblies", "assume", "titan", "ambassador"]
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -41,14 +43,13 @@ bot.on('messageCreate', (message) => {
     }
     else {
         usermessage = message.content.toLowerCase();
-        console.log("No image detected");
     }
     if (message.author.bot) {
     	return;
     	}
     else if(badWords.some(word => usermessage.includes(word))){
         const sender = `${message.author} sent the following message...`
-        const modchat = '510189494809526283';
+        const modchat = '1148137602944352347';
 	    const techwizz = ` <@331669618387058688> `;
         message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + techwizz + 'or wait for him to see it then he will fix it.');
         message.delete();
@@ -67,8 +68,8 @@ bot.on('messageCreate', (message) => {
     else if(usermessage.includes("that's pretty neat")){
         message.channel.send('how neat is that?');
     }
-    else if(usermessage.includes('tit') || usermessage.includes('cock') || usermessage.includes('ass')){
-       if (usermessage.includes('title') || usermessage.includes('class') || usermessage.includes('grass') || usermessage.includes('glass') || usermessage.includes('pass') || usermessage.includes('assembly') || usermessage.includes('assemblies') || usermessage.includes('assume') || usermessage.includes('titan') || usermessage.includes('ambassador')){ //These are not bad words and will be bypassed
+    else if(potentialBadWords.some(word => usermessage.includes(word))){
+       if (whitelist.some(word => usermessage.includes(word))){ //These are not bad words and will be bypassed
            return;
        }
            const techwizz = `<@331669618387058688> `;
