@@ -5,6 +5,7 @@ const {
 } = require('discord.js');
 
 const Tesseract = require('tesseract.js');
+const badWords = ["fuck", "shit", "dumbass", "bitch", "nigg", "penis", "pussy", "damn", "puto", "cunt", "dyke", "fag", "beaner", "fvck", "milf", "dilf", "dick", "beaney", "gypsy", "bong", "chink", "cholo", "danm", "gyp", "injun", "jigaboo", "jigger", "negro", "whore", "slut", "redskin", "cooter", "vagina", "squaw", "twink", "shemale", "cripple", "midget", "kike"];
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -45,7 +46,7 @@ bot.on('messageCreate', (message) => {
     if (message.author.bot) {
     	return;
     	}
-    else if(usermessage.includes('fuck') || usermessage.includes('shit') || usermessage.includes('dumbass') || usermessage.includes('bitch') || usermessage.includes('nigg') || usermessage.includes('penis') || usermessage.includes('pussy') || usermessage.includes('damn') || usermessage.includes('puto') || usermessage.includes('cunt') || usermessage.includes('dyke') || usermessage.includes('fag') || usermessage.includes('beaner') || usermessage.includes('fvck') || usermessage.includes('milf') || usermessage.includes('dilf') || usermessage.includes('dick') || usermessage.includes('beaney') || usermessage.includes('gypsy') || usermessage.includes('bong') || usermessage.includes('chink') || usermessage.includes('cholo') || usermessage.includes('danm') || usermessage.includes('gyp') || usermessage.includes('injun') || usermessage.includes('jigaboo') || usermessage.includes('jigger') || usermessage.includes('negro') || usermessage.includes('whore') || usermessage.includes('slut') || usermessage.includes('redskin') || usermessage.includes('cooter') || usermessage.includes('vagina') || usermessage.includes('squaw') || usermessage.includes('twink') || usermessage.includes('shemale') || usermessage.includes('cripple') ||  usermessage.includes('midget') || usermessage.includes('kike')){
+    else if(badWords.some(word => usermessage.includes(word))){
         const sender = `${message.author} sent the following message...`
         const modchat = '510189494809526283';
 	    const techwizz = ` <@331669618387058688> `;
@@ -72,7 +73,7 @@ bot.on('messageCreate', (message) => {
        }
            const techwizz = `<@331669618387058688> `;
            const sender = techwizz + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
-           const modchat = '510189494809526283';
+           const modchat = '1148137602944352347';
            bot.channels.cache.get(modchat).send(sender);
            bot.channels.cache.get(modchat).send(message);
        }
