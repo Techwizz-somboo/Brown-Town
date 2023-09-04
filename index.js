@@ -5,9 +5,16 @@ const {
 } = require('discord.js');
 
 const Tesseract = require('tesseract.js');
-const badWords = ["fuck", "shit", "dumbass", "bitch", "nigg", "penis", "pussy", "damn", "puto", "cunt", "dyke", "fag", "beaner", "fvck", "milf", "dilf", "dick", "beaney", "gypsy", "bong", "chink", "cholo", "danm", "gyp", "injun", "jigaboo", "jigger", "negro", "whore", "slut", "redskin", "cooter", "vagina", "squaw", "twink", "shemale", "cripple", "midget", "kike", "hell"];
-const potentialBadWords = ["tit", "cock", "ass"]
-const whitelist = ["title", "class", "grass", "glass", "pass", "assembly", "assemblies", "assume", "titan", "ambassador"]
+const fs = require('fs');
+
+const badWordsList = 'badwords.txt';
+const potentialBadWordsList = 'potentialbadwords.txt';
+const whitelistList = 'whitelist.txt';
+
+//The arrays are filled at runtime in bot.on('ready')
+let badWords = [];
+let potentialBadWords = [];
+let whitelist = [];
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -18,6 +25,12 @@ let usermessage;
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag}!`);
   bot.user.setActivity(`reach for the sky and wave hi`, {type: 'PLAYING'});
+  fillArrayFromFile(badWordsList, badWords);
+  fillArrayFromFile(potentialBadWordsList, potentialBadWords);
+  fillArrayFromFile(whitelistList, whitelist);
+  setTimeout(() => {  console.log('Bad Words From File:', badWords); }, 100);
+  setTimeout(() => {  console.log('Potential Bad Words From File:', potentialBadWords); }, 100);
+  setTimeout(() => {  console.log('Whitelist From File:', whitelist); }, 100);
 });
 
 bot.on('guildMemberAdd', (member) => {
@@ -28,6 +41,30 @@ bot.on('guildMemberAdd', (member) => {
       channel.send(welcomeMessage)
     });
 });
+
+function fillArrayFromFile(filePath, dataArray) {
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+    
+    // Split the file contents into an array (removing empty strings)
+    const lines = data.split('\n').filter((line) => line.trim() !== '');
+    
+    // Split the file contents into an array (assuming each line is an item)
+    dataArray.length = 0;
+    dataArray.push(...data.split('\n'));
+    
+    // If there are empty values, remove them
+    // Implementation taken from https://stackoverflow.com/a/2843625
+    let i;
+    len = dataArray.length, i;
+    for(i = 0; i < len; i++ )
+        dataArray[i] && dataArray.push(dataArray[i]);
+    dataArray.splice(0 , len);
+  });
+}
 
 bot.on('messageCreate', (message) => {
     if (message.attachments.size > 0) {
