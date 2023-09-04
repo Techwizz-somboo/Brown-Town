@@ -7,11 +7,17 @@ const {
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 
+// Change these to match the user the bot pings "owner" when it deletes a message and which channel it logs messages to "modchat"
+const owner = `<@331669618387058688> `;
+const modchat = '1148137602944352347';
+const botStatus = `reach for the sky and wave hi` // This shows as the bot's status in Discord
+
+// The list file locations are initalized here
 const badWordsList = './lists/badwords.txt';
 const potentialBadWordsList = './lists/potentialbadwords.txt';
 const whitelistList = './lists/whitelist.txt';
 
-//The arrays are filled at runtime in bot.on('ready')
+// The arrays are filled at runtime in bot.on('ready')
 let badWords = [];
 let potentialBadWords = [];
 let whitelist = [];
@@ -24,7 +30,8 @@ let usermessage;
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag}!`);
-  bot.user.setActivity(`reach for the sky and wave hi`, {type: 'PLAYING'});
+  bot.user.setActivity(botStatus, {type: 'PLAYING'});
+  console.log(`Bot status set to "` + botStatus + `"`);
   fillArrayFromFile(badWordsList, badWords);
   fillArrayFromFile(potentialBadWordsList, potentialBadWords);
   fillArrayFromFile(whitelistList, whitelist);
@@ -87,8 +94,8 @@ bot.on('messageCreate', (message) => {
     else if(badWords.some(word => usermessage.includes(word))){
         const sender = `${message.author} sent the following message...`
         const modchat = '1148137602944352347';
-	    const techwizz = ` <@331669618387058688> `;
-        message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + techwizz + 'or wait for him to see it then he will fix it.');
+	    const owner = ` <@331669618387058688> `;
+        message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + owner + 'or wait for him to see it then he will fix it.');
         message.delete();
         bot.channels.cache.get(modchat).send(sender);
         bot.channels.cache.get(modchat).send(message);
@@ -109,9 +116,7 @@ bot.on('messageCreate', (message) => {
        if (whitelist.some(word => usermessage.includes(word))){ //These are not bad words and will be bypassed
            return;
        }
-           const techwizz = `<@331669618387058688> `;
-           const sender = techwizz + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
-           const modchat = '1148137602944352347';
+           const sender = owner + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
            bot.channels.cache.get(modchat).send(sender);
            bot.channels.cache.get(modchat).send(message);
        }
