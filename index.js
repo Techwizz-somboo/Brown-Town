@@ -5,6 +5,23 @@ const {
 } = require('discord.js');
 
 const Tesseract = require('tesseract.js');
+const fs = require('fs');
+
+// Change these to match the user the bot pings "owner" when it deletes a message and which channel it logs messages to "modchat"
+const owner = `<@331669618387058688> `;
+const modchat = '510189494809526283';
+const botStatus = `reach for the sky and wave hi` // This shows as the bot's status in Discord
+const adminRole = `509444712734654464` // So admins can use the !bot command
+
+// The list file locations are initalized here
+const badWordsList = './lists/badwords.txt';
+const potentialBadWordsList = './lists/potentialbadwords.txt';
+const whitelistList = './lists/whitelist.txt';
+
+// The arrays are filled at runtime in bot.on('ready')
+let badWords = [];
+let potentialBadWords = [];
+let whitelist = [];
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -14,7 +31,14 @@ let usermessage;
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag}!`);
-  bot.user.setActivity(`reach for the sky and wave hi`, {type: 'PLAYING'});
+  bot.user.setActivity(botStatus, {type: 'PLAYING'});
+  console.log(`Bot status set to "` + botStatus + `"`);
+  fillArrayFromFile(badWordsList, badWords);
+  fillArrayFromFile(potentialBadWordsList, potentialBadWords);
+  fillArrayFromFile(whitelistList, whitelist);
+  setTimeout(() => {  console.log('Bad Words From File:', badWords); }, 100);
+  setTimeout(() => {  console.log('Potential Bad Words From File:', potentialBadWords); }, 100);
+  setTimeout(() => {  console.log('Whitelist From File:', whitelist); }, 100);
 });
 
 bot.on('guildMemberAdd', (member) => {
@@ -26,56 +50,201 @@ bot.on('guildMemberAdd', (member) => {
     });
 });
 
+function fillArrayFromFile(filePath, dataArray) {
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+    
+    // Split the file contents into an array (removing empty strings)
+    const lines = data.split('\n').filter((line) => line.trim() !== '');
+    
+    // Split the file contents into an array (assuming each line is an item)
+    dataArray.length = 0;
+    dataArray.push(...data.split('\n'));
+    
+    // If there are empty values, remove them
+    // Implementation taken from https://stackoverflow.com/a/2843625
+    let i;
+    len = dataArray.length, i;
+    for(i = 0; i < len; i++ )
+        dataArray[i] && dataArray.push(dataArray[i]);
+    dataArray.splice(0 , len);
+  });
+}
+
+function deleteWordFromFile(filePath, dataArray, word) {
+   fs.readFile(filePath, 'utf-8', (err, data) => {
+   if (err) {
+      console.error('Error reading file:', err);
+      return;
+   }
+    
+   // Modify the content to remove the word
+   const lines = data.split('\n');
+   const modifiedLines = lines.filter((line) => !line.includes(word));
+   const modifiedContent = modifiedLines.join('\n');
+
+   // Write the new content to file
+   fs.writeFile(filePath, modifiedContent, 'utf8', (err) => {
+   if (err) {
+      console.error('Error writing to the file:', err);
+   } else {
+      console.log(word + ' removed successfully from list ' + filePath);
+   }
+   });
+   });
+   
+   // Fill array again so there's no need to restart the bot
+   setTimeout(() => {  fillArrayFromFile(filePath, dataArray); }, 1000);
+}
+
+function addWordToFile(filePath, dataArray, word) {
+   fs.readFile(filePath, 'utf-8', (err, data) => {
+   if (err) {
+      console.error('Error reading file:', err);
+      return;
+   }
+   
+   // Append new line and word
+   const updatedContent = `${data.trimRight()}\n${word}`;
+   
+   // Write the new content to file
+   fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+    if (err) {
+       console.error('Error writing to the file:', err);
+    } else {
+       console.log(word + ' added to list ' + filePath);
+    }
+   });
+   });
+   
+   // Fill array again so there's no need to restart the bot
+   setTimeout(() => {  fillArrayFromFile(filePath, dataArray); }, 1000);
+}
+
 bot.on('messageCreate', (message) => {
-    if (message.attachments.size > 0) {
+    if (message.author.bot) {
+    	return;
+    	}
+    else if(message.content.includes("!bot")){
+       if(message.member.roles.cache.has(adminRole)){
+          if(message.channelId == modchat){
+             if(message.content.includes("delete")){
+                if(message.content.includes("pbadwords")){
+                   const wordToDelete = message.content.replace(/!bot delete pbadwords /, '');
+                   deleteWordFromFile(potentialBadWordsList, potentialBadWords, wordToDelete);
+                   message.channel.send("Deleted " + wordToDelete + " from potentialbadwords list!");
+                }
+                else if(message.content.includes("badwords")){
+                   const wordToDelete = message.content.replace(/!bot delete badwords /, '');
+                   deleteWordFromFile(badWordsList, badWords, wordToDelete);
+                   message.channel.send("Deleted " + wordToDelete + " from badwords list!");
+                }
+                else if(message.content.includes("whitelist")){
+                   const wordToDelete = message.content.replace(/!bot delete whitelist /, '');
+                   deleteWordFromFile(whitelistList, whitelist, wordToDelete);
+                   message.channel.send("Deleted " + wordToDelete + " from whitelist!");
+                }
+                else {
+                   message.channel.send("Usage: \n```\n!bot delete badwords/pbadwords/whitelist word\n```")
+                }
+             }
+             else if(message.content.includes("add")){
+                if(message.content.includes("pbadwords")){
+                   const wordToAdd = message.content.replace(/!bot add pbadwords /, '');
+                   addWordToFile(potentialBadWordsList, potentialBadWords, wordToAdd);
+                   message.channel.send("Added " + wordToAdd + " to potentialbadwords list!");
+                }
+                else if(message.content.includes("badwords")){
+                   const wordToAdd = message.content.replace(/!bot add badwords /, '');
+                   addWordToFile(badWordsList, badWords, wordToAdd);
+                   message.channel.send("Added " + wordToAdd + " to badwords list!");
+                }
+                else if(message.content.includes("whitelist")){
+                   const wordToAdd = message.content.replace(/!bot add whitelist /, '');
+                   addWordToFile(whitelistList, whitelist, wordToAdd);
+                   message.channel.send("Added " + wordToAdd + " to potentialbadwords list!");
+                }
+                else {
+                   message.channel.send("Usage: \n```\n!bot add badwords/pbadwords/whitelist word\n```")
+                }
+             }
+             else if(message.content.includes("list")){
+                const pBadWordsString = potentialBadWords.join(', ');
+                const badWordsString = badWords.join(', ');
+                const whitelistString = whitelist.join(', ');
+                if(message.content.includes("pbadwords")){
+                   message.channel.send(`Potential bad words: ${pBadWordsString}`);
+                }
+                else if(message.content.includes("badwords")){
+                   message.channel.send(`Bad words: ${badWordsString}`);
+                }
+                else if(message.content.includes("whitelist")){
+                   message.channel.send(`Whitelist: ${whitelistString}`);
+                }
+                else {
+                   message.channel.send("Usage: \n```\n!bot list badwords/pbadwords/whitelist\n```")
+                }
+             }
+             else {
+                message.channel.send("Usage: \n```\n!bot list badwords/pbadwords/whitelist\n!bot delete badwords/pbadwords/whitelist word\n!bot add badwords/pbadwords/whitelist word\n```");
+             }
+          }
+          else {
+             message.channel.send('Commands can only be used in the <#' + modchat + '> channel!');
+          }
+       }
+       else {
+          message.channel.send('Sorry, only an admin can use the !bot command!');
+       }
+    }
+    else if (message.attachments.size > 0) {
         let image = message.attachments.first().url;
         Tesseract.recognize(
           image,
           'eng',
           { logger: m => console.log(m) }
         ).then(({ data: { text } }) => {
-          console.log(text);
-          usermessage = text;
+          imagemessage = text.toLowerCase();
+          console.log(imagemessage);
+          if (badWords.some(word => imagemessage.includes(word))){
+              const sender = `${message.author} sent the following message...`
+              message.delete();
+              message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + owner + 'or wait for him to see it then he will fix it.');
+              bot.channels.cache.get(modchat).send(sender);
+              bot.channels.cache.get(modchat).send(message.attachments.first().url);
+          }
         })
     }
-    else {
-        usermessage = message.content.toLowerCase();
-        console.log("No image detected");
-    }
-    if (message.author.bot) {
-    	return;
-    	}
-    else if(usermessage.includes('fuck') || usermessage.includes('shit') || usermessage.includes('dumbass') || usermessage.includes('bitch') || usermessage.includes('nigg') || usermessage.includes('penis') || usermessage.includes('pussy') || usermessage.includes('damn') || usermessage.includes('puto') || usermessage.includes('cunt') || usermessage.includes('dyke') || usermessage.includes('fag') || usermessage.includes('beaner') || usermessage.includes('fvck') || usermessage.includes('milf') || usermessage.includes('dilf') || usermessage.includes('dick') || usermessage.includes('beaney') || usermessage.includes('gypsy') || usermessage.includes('bong') || usermessage.includes('chink') || usermessage.includes('cholo') || usermessage.includes('danm') || usermessage.includes('gyp') || usermessage.includes('injun') || usermessage.includes('jigaboo') || usermessage.includes('jigger') || usermessage.includes('negro') || usermessage.includes('whore') || usermessage.includes('slut') || usermessage.includes('redskin') || usermessage.includes('cooter') || usermessage.includes('vagina') || usermessage.includes('squaw') || usermessage.includes('twink') || usermessage.includes('shemale') || usermessage.includes('cripple') ||  usermessage.includes('midget') || usermessage.includes('kike')){
+    else if(badWords.some(word => message.content.toLowerCase().includes(word))){
         const sender = `${message.author} sent the following message...`
-        const modchat = '510189494809526283';
-	    const techwizz = ` <@331669618387058688> `;
-        message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + techwizz + 'or wait for him to see it then he will fix it.');
+        message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + owner + 'or wait for him to see it then he will fix it.');
         message.delete();
         bot.channels.cache.get(modchat).send(sender);
         bot.channels.cache.get(modchat).send(message);
         }
-    else if(usermessage.includes('bot say sorry')){
+    else if(message.content.includes('bot say sorry')){
         message.channel.send('I am sorry for whatever I did. It will not happen again.');
         }
-    else if(usermessage.includes('green mario')){
+    else if(message.content.includes('green mario')){
         message.channel.send('Red Luigi');
     }
-    else if(usermessage.includes('how neat is that')){
+    else if(message.content.includes('how neat is that')){
         message.channel.send("that's pretty neat!");
     }
-    else if(usermessage.includes("that's pretty neat")){
+    else if(message.content.includes("that's pretty neat")){
         message.channel.send('how neat is that?');
     }
-    else if(usermessage.includes('tit') || usermessage.includes('cock') || usermessage.includes('ass')){
-       if (usermessage.includes('title') || usermessage.includes('class') || usermessage.includes('grass') || usermessage.includes('glass') || usermessage.includes('pass') || usermessage.includes('assembly') || usermessage.includes('assemblies') || usermessage.includes('assume') || usermessage.includes('titan') || usermessage.includes('ambassador')){ //These are not bad words and will be bypassed
+    else if(potentialBadWords.some(word => message.content.toLowerCase().includes(word))){
+       if (whitelist.some(word => message.content.toLowerCase().includes(word))){ //These are not bad words and will be bypassed
            return;
        }
-           const techwizz = `<@331669618387058688> `;
-           const sender = techwizz + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
-           const modchat = '510189494809526283';
+           const sender = owner + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
            bot.channels.cache.get(modchat).send(sender);
            bot.channels.cache.get(modchat).send(message);
-       }
+    }
 });
 
 //make sure this line is the last line
