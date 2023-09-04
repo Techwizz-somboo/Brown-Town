@@ -7,9 +7,9 @@ const {
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 
-const badWordsList = 'badwords.txt';
-const potentialBadWordsList = 'potentialbadwords.txt';
-const whitelistList = 'whitelist.txt';
+const badWordsList = './lists/badwords.txt';
+const potentialBadWordsList = './lists/potentialbadwords.txt';
+const whitelistList = './lists/whitelist.txt';
 
 //The arrays are filled at runtime in bot.on('ready')
 let badWords = [];
