@@ -7,11 +7,11 @@ const {
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 
-// Change these to match the user the bot pings "owner" when it deletes a message and which channel it logs messages to "modchat"
-const owner = `<@331669618387058688> `;
-const modchat = '510189494809526283';
-const botStatus = `reach for the sky and wave hi` // This shows as the bot's status in Discord
-const adminRole = `509444712734654464` // So admins can use the !bot command
+// Change these in .env to match the user the bot pings "owner" when it deletes a message and which channel it logs messages to "modchat"
+const owner = process.env.OWNER;
+const modchat = process.env.MODCHAT;
+const botStatus = process.env.BOT_STATUS; // This shows as the bot's status in Discord
+const adminRole = process.env.ADMIN_ROLE; // So admins can use the !bot command
 
 // The list file locations are initalized here
 const badWordsList = './lists/badwords.txt';
