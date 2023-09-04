@@ -1,0 +1,16 @@
+[Unit]
+Description=Starts Brown-town as a systemd service.
+After=network-online.target
+Wants=network-online.target systemd-networkd-wait-online.service
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+Restart=on-failure
+RestartSec=5s
+
+ExecStart=/path/to/start.sh
+
+[Install]
+WantedBy=multi-user.target
