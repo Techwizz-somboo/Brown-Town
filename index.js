@@ -13,7 +13,6 @@ const modchat = process.env.MODCHAT;
 const botStatus = process.env.BOT_STATUS; // This shows as the bot's status in Discord
 const adminRole = process.env.ADMIN_ROLE; // So admins can use the !bot command
 const welcomeChannelId = process.env.WELCOME_CHANNEL; // Channel where welcome messages are sent
-const welcomeMessage = process.env.WELCOME_MESSAGE; // Message displayed when new users join
 
 // The list file locations are initalized here
 const badWordsList = './lists/badwords.txt';
@@ -46,7 +45,8 @@ bot.on('ready', () => {
 bot.on('guildMemberAdd', (member) => {
   console.log(member)
   member.guild.channels.fetch(welcomeChannelId).then(channel => {
-      channel.send(welcomeMessage)
+      const welcomeMessage = process.env.WELCOME_MESSAGE.replace('<@${member.id}>', `<@${member.id}>`);
+      channel.send(welcomeMessage);
     });
 });
 
