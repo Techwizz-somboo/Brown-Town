@@ -45,7 +45,7 @@ bot.on('ready', () => {
 
 bot.on('guildMemberAdd', (member) => {
   console.log(member)
-  member.guild.channels.fetch(channelId).then(channel => {
+  member.guild.channels.fetch(welcomeChannelId).then(channel => {
       channel.send(welcomeMessage)
     });
 });
