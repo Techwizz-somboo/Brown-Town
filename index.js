@@ -165,7 +165,7 @@ bot.on('messageCreate', (message) => {
                 else if(message.content.includes("whitelist")){
                    const wordToAdd = message.content.replace(/!bot add whitelist /, '');
                    addWordToFile(whitelistList, whitelist, wordToAdd);
-                   message.channel.send("Added " + wordToAdd + " to potentialbadwords list!");
+                   message.channel.send("Added " + wordToAdd + " to whitelist!");
                 }
                 else {
                    message.channel.send("Usage: \n```\n!bot add badwords/pbadwords/whitelist word\n```")
