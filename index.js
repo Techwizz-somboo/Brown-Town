@@ -18,11 +18,13 @@ const welcomeChannelId = process.env.WELCOME_CHANNEL; // Channel where welcome m
 const badWordsList = './lists/badwords.txt';
 const potentialBadWordsList = './lists/potentialbadwords.txt';
 const whitelistList = './lists/whitelist.txt';
+const dmList = './lists/dm.txt';
 
 // The arrays are filled at runtime in bot.on('ready')
 let badWords = [];
 let potentialBadWords = [];
 let whitelist = [];
+let dm = [];
 
 const bot = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
@@ -37,9 +39,11 @@ bot.on('ready', () => {
   fillArrayFromFile(badWordsList, badWords);
   fillArrayFromFile(potentialBadWordsList, potentialBadWords);
   fillArrayFromFile(whitelistList, whitelist);
+  fillArrayFromFile(dmList, dm);
   setTimeout(() => {  console.log('Bad Words From File:', badWords); }, 100);
   setTimeout(() => {  console.log('Potential Bad Words From File:', potentialBadWords); }, 100);
   setTimeout(() => {  console.log('Whitelist From File:', whitelist); }, 100);
+  setTimeout(() => {  console.log('DM list From File:', dm); }, 100);
 });
 
 bot.on('guildMemberAdd', (member) => {
@@ -106,9 +110,24 @@ function addWordToFile(filePath, dataArray, word) {
       console.error('Error reading file:', err);
       return;
    }
+
+   // Split the file content into an array of words
+   const words = data.trimRight().split('\n');
+
+   // Check if the word already exists in the list
+   if (words.includes(word)) {
+      console.log(word + ' already exists in list ' + filePath);
+      return;
+   }
    
-   // Append new line and word
-   const updatedContent = `${data.trimRight()}\n${word}`;
+   if (!data.trim()) {
+      console.log(filePath + ' is blank, not adding new line.');
+      updatedContent = word;
+   }
+   else {
+      // Append new line and word
+      const updatedContent = `${data.trimRight()}\n${word}`;
+   }
    
    // Write the new content to file
    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
@@ -122,6 +141,25 @@ function addWordToFile(filePath, dataArray, word) {
    
    // Fill array again so there's no need to restart the bot
    setTimeout(() => {  fillArrayFromFile(filePath, dataArray); }, 1000);
+}
+
+async function sendDMsToUsers(message) {
+  for (const userId of dm) {
+    try {
+      // Find the user by their ID
+      const user = await bot.users.fetch(userId);
+
+      if (user) {
+        // Send a DM to the user
+        await user.send(message);
+        console.log(`Sent a DM to ${user.tag}`);
+      } else {
+        console.log(`User with ID ${userId} not found`);
+      }
+    } catch (error) {
+      console.error(`Error sending DM to user with ID ${userId}: ${error.message}`);
+    }
+  }
 }
 
 function checkMessage(message) {
@@ -188,8 +226,21 @@ function checkMessage(message) {
                    message.channel.send("Usage: \n```\n!bot list badwords/pbadwords/whitelist\n```")
                 }
              }
+             else if(message.content.includes("dm")){
+                if(message.content.includes("on")){
+                   addWordToFile(dmList, dm, message.author.id);
+                   message.channel.send("Added you to the DM list!");
+                }
+                else if(message.content.includes("off")){
+                   deleteWordFromFile(dmList, dm, message.author.id);
+                   message.channel.send("Removed you from the DM list!");
+                }
+                else {
+                   message.channel.send("Usage: \n```\n!bot dm on/off\n```")
+                }
+            }
              else {
-                message.channel.send("Usage: \n```\n!bot list badwords/pbadwords/whitelist\n!bot delete badwords/pbadwords/whitelist word\n!bot add badwords/pbadwords/whitelist word\n```");
+                message.channel.send("Usage: \n```\n!bot list badwords/pbadwords/whitelist\n!bot delete badwords/pbadwords/whitelist word\n!bot add badwords/pbadwords/whitelist word\n!bot dm on/off\n```");
              }
           }
           else {
@@ -210,20 +261,20 @@ function checkMessage(message) {
           imagemessage = text.toLowerCase();
           console.log(imagemessage);
           if (badWords.some(word => imagemessage.includes(word))){
-              const sender = `${message.author} sent the following message...`
+              const sender = `${message.author} sent the following message in <#${message.channelId}>...`
               message.delete();
               message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + owner + 'or wait for him to see it then he will fix it.');
-              bot.channels.cache.get(modchat).send(sender);
-              bot.channels.cache.get(modchat).send(message.attachments.first().url);
+              bot.channels.cache.get(modchat).send(sender + '\n' + message.attachments.first().url);
+              sendDMsToUsers(sender + '\n' + message.attachments.first().url);
           }
         })
     }
     else if(badWords.some(word => message.content.toLowerCase().includes(word))){
-        const sender = `${message.author} sent the following message...`
+        const sender = `${message.author} sent the following message in <#${message.channelId}>...`
         message.channel.send('Hey! Please keep your language school appropriate... If I deleted your message by mistake, please contact' + owner + 'or wait for him to see it then he will fix it.');
         message.delete();
-        bot.channels.cache.get(modchat).send(sender);
-        bot.channels.cache.get(modchat).send(message);
+        bot.channels.cache.get(modchat).send(sender + '\n' + message.content);
+        sendDMsToUsers(sender + '\n' + message.content);
         }
     else if(message.content.includes('bot say sorry')){
         message.channel.send('I am sorry for whatever I did. It will not happen again.');
@@ -241,11 +292,10 @@ function checkMessage(message) {
        if (whitelist.some(word => message.content.toLowerCase().includes(word))){ //These are not bad words and will be bypassed
            return;
        }
-           const sender = owner + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
+           const sender = owner + `${message.author} sent the following message ***BUT WAS NOT DELETED...***`
            const link = "https://discord.com/channels/" + message.guildId + "/" + message.channelId + "/" + message.id;
-           bot.channels.cache.get(modchat).send(sender);
-           bot.channels.cache.get(modchat).send(message);
-           bot.channels.cache.get(modchat).send(link);
+           bot.channels.cache.get(modchat).send(sender + '\n' + message.content + '\n' + link);
+           sendDMsToUsers(sender + '\n' + message.content + '\n' + link);
     }
 }
 
