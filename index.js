@@ -125,6 +125,7 @@ function addWordToFile(filePath, dataArray, word) {
 }
 
 bot.on('messageCreate', (message) => {
+    console.log(message);
     if (message.author.bot) {
     	return;
     	}
@@ -242,8 +243,10 @@ bot.on('messageCreate', (message) => {
            return;
        }
            const sender = owner + `${message.author} sent the following message (BUT WAS NOT DELETED)...`
+           const link = "https://discord.com/channels/" + message.guildId + "/" + message.channelId + "/" + message.id;
            bot.channels.cache.get(modchat).send(sender);
            bot.channels.cache.get(modchat).send(message);
+           bot.channels.cache.get(modchat).send(link);
     }
 });
 
