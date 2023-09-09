@@ -125,7 +125,6 @@ function addWordToFile(filePath, dataArray, word) {
 }
 
 bot.on('messageCreate', (message) => {
-    console.log(message);
     if (message.author.bot) {
     	return;
     	}
