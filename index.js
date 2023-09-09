@@ -124,7 +124,7 @@ function addWordToFile(filePath, dataArray, word) {
    setTimeout(() => {  fillArrayFromFile(filePath, dataArray); }, 1000);
 }
 
-bot.on('messageCreate', (message) => {
+function checkMessage(message) {
     if (message.author.bot) {
     	return;
     	}
@@ -247,6 +247,14 @@ bot.on('messageCreate', (message) => {
            bot.channels.cache.get(modchat).send(message);
            bot.channels.cache.get(modchat).send(link);
     }
+}
+
+bot.on('messageCreate', (message) => {
+   checkMessage(message);
+});
+
+bot.on('messageUpdate', (oldMessage, newMessage) => {
+   checkMessage(newMessage);
 });
 
 //make sure this line is the last line
