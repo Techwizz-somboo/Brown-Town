@@ -1,5 +1,5 @@
 # Brown-Town
-A Discord welcome and moderation bot
+A Discord welcome and moderation bot.
 
 The current features are listed below:
 
@@ -11,6 +11,8 @@ Note that Brown Town is still early in development. Things are bound to change.
 - [x] Set a custom status for the bot
 - [x] Naughty word filter
 - [x] 3 lists that can be added to and removed from in real-time (badwords, potential-badwords, and whitelist)
+- [x] Has support for `!bot` commands
+- [x] Can DM moderators that choose to enable it
 
 ### Planned Features
 
